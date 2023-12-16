@@ -13,20 +13,23 @@ public class LuckySwing : MonoBehaviour
     public float goal;
     private bool isSpinning;
     public UnityEvent onSpinEnd;
+    private Transform lastChoice;
     private void OnDrawGizmos()
     {
         Gizmos.DrawWireSphere(transform.position, circleRadius);
         DrawLineToTargetAngle();
         Gizmos.color = Color.red;
-        for (int i = 0; i < spawn.items.Count; i++)
+        for (int i = 0; i < spawn.data.itemList.Count; i++)
         {
             float angle = i * Mathf.PI * 2 / spawn.items.Count;
             float x = Mathf.Cos(angle) * circleRadius;
             float y = Mathf.Sin(angle) * circleRadius;
             Vector3 spawnPosition = new Vector3(x, y, 0f);
          
-            Gizmos.DrawWireSphere(spawnPosition+transform.position,50);
+            Gizmos.DrawWireSphere(spawnPosition+transform.position,0.5f);
         }
+        Gizmos.color = Color.blue;
+        Gizmos.DrawWireSphere(lastChoice.position, 0.5f);
     }
     void Start()
     {
@@ -97,7 +100,8 @@ void DrawLineToTargetAngle()
    public void SpinObject(float targetAngle)
     {
         // Tính toán tổng số độ cần xoay dựa trên targetRotation
-        float totalRotation =transform.rotation.eulerAngles.z+ targetAngle + (360 * numberOfSpins);
+        float z = transform.rotation.eulerAngles.z;
+        float totalRotation = z - targetAngle + (360 * numberOfSpins);
 
         isSpinning = true;
         // Tạo tween để xoay đối tượng
@@ -108,26 +112,30 @@ void DrawLineToTargetAngle()
                 Debug.Log("Xoay xong!");
             }).OnComplete(() =>
             {
-                transform.eulerAngles = new Vector3(0, 0, totalRotation);
+                transform.eulerAngles = new Vector3(0, 0, totalRotation%360);
                 isSpinning = false;
                 onSpinEnd.Invoke();
             });
     }
     public void SpinObject(Transform target)
     {
-        var goalDir =  Quaternion.Euler(0, 0, goal) * Vector3.up;
+        var goalDir = Quaternion.Euler(0, 0, goal) * Vector3.up;
         Vector3 to = target.position - transform.position;
-        SpinObject(Vector3.Angle(goalDir, to));
-       Debug.Log(Vector3.Angle(goalDir, to));
+        float gotoAngle = Vector3.Angle(goalDir, to);
+        if (target.position.x > transform.position.x) gotoAngle =-Mathf.Abs( gotoAngle); 
+        SpinObject(gotoAngle);
+       Debug.Log(gotoAngle);
     }
     public void Spin()
     {
         if (isSpinning) return;
        Item item= GetRandomWeightedItem(spawn.data.itemList.ToArray());
+        
         Debug.Log(item.id + " was choice");
         if (item != null)
         {
            GameObject target= spawn.items.Find(x => x.name == item.id.ToString());
+            lastChoice = target.transform;
             SpinObject(target.transform);
         }
     }
