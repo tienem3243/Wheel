@@ -29,6 +29,7 @@ public class LuckySwing : MonoBehaviour
             Gizmos.DrawWireSphere(spawnPosition+transform.position,0.5f);
         }
         Gizmos.color = Color.blue;
+        if(lastChoice!=null)
         Gizmos.DrawWireSphere(lastChoice.position, 0.5f);
     }
     void Start()
