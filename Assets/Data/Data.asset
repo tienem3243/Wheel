@@ -16,36 +16,48 @@ MonoBehaviour:
   - id: 0
     weight: 0
     sprite: {fileID: 21300000, guid: d2c346e897743ba498357d807f9762a3, type: 3}
+    description: Crystal 1
   - id: 1
     weight: 44
     sprite: {fileID: 21300000, guid: f2fb7d1006e544e49bc45ea4e7625667, type: 3}
+    description: Crystal 2
   - id: 2
     weight: 33
     sprite: {fileID: 21300000, guid: eacf2454c9956ee47b3f5dbd60f58f6a, type: 3}
+    description: Crystal 3
   - id: 3
     weight: 33
     sprite: {fileID: 21300000, guid: abf1b04b3af5b7e4c918664d4a33e17e, type: 3}
+    description: Crystal 4
   - id: 4
     weight: 33
     sprite: {fileID: 21300000, guid: 3429451f49a8f9c42b3ebc3077f7c1ae, type: 3}
+    description: Crystal 5
   - id: 5
     weight: 33
     sprite: {fileID: 21300000, guid: 7b66ff9e6b83c584e8b0352d0ef16b6b, type: 3}
+    description: Crystal 6
   - id: 6
     weight: 33
     sprite: {fileID: 21300000, guid: 7b66ff9e6b83c584e8b0352d0ef16b6b, type: 3}
+    description: Crystal 7
   - id: 7
     weight: 33
     sprite: {fileID: 21300000, guid: 7b66ff9e6b83c584e8b0352d0ef16b6b, type: 3}
+    description: Crystal 1
   - id: 8
     weight: 33
     sprite: {fileID: 21300000, guid: 7b66ff9e6b83c584e8b0352d0ef16b6b, type: 3}
+    description: Crystal 8
   - id: 9
     weight: 33
     sprite: {fileID: 21300000, guid: 7b66ff9e6b83c584e8b0352d0ef16b6b, type: 3}
+    description: Crystal 9
   - id: 10
     weight: 33
     sprite: {fileID: 21300000, guid: 7b66ff9e6b83c584e8b0352d0ef16b6b, type: 3}
+    description: Crystal 10
   - id: 11
     weight: 33
     sprite: {fileID: 21300000, guid: 7b66ff9e6b83c584e8b0352d0ef16b6b, type: 3}
+    description: Crystal 11

@@ -1,4 +1,5 @@
 ﻿using DG.Tweening;
+using System;
 using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.Events;
@@ -12,8 +13,11 @@ public class LuckySwing : MonoBehaviour
     public float rotationDuration;
     public float goal;
     private bool isSpinning;
-    public UnityEvent onSpinEnd;
+    public UnityEvent<string> OnSpinEnd;
+    private string currentChoice = "";
     private Transform lastChoice;
+    [SerializeField] private AnimationCurve curve;
+
     private void OnDrawGizmos()
     {
         Gizmos.DrawWireSphere(transform.position, circleRadius);
@@ -25,19 +29,19 @@ public class LuckySwing : MonoBehaviour
             float x = Mathf.Cos(angle) * circleRadius;
             float y = Mathf.Sin(angle) * circleRadius;
             Vector3 spawnPosition = new Vector3(x, y, 0f);
-         
-            Gizmos.DrawWireSphere(spawnPosition+transform.position,0.5f);
+
+            Gizmos.DrawWireSphere(spawnPosition + transform.position, 0.5f);
         }
         Gizmos.color = Color.blue;
-        if(lastChoice!=null)
-        Gizmos.DrawWireSphere(lastChoice.position, 0.5f);
+        if (lastChoice != null)
+            Gizmos.DrawWireSphere(lastChoice.position, 0.5f);
     }
     void Start()
     {
         spawn.Spawn();
         if (spawn.items.Count > 0)
             SpawnUIObjects();
-        
+        OnSpinEnd.AddListener(SpinEnd);   
     }
 
     Item GetRandomWeightedItem(Item[] itemList)
@@ -66,13 +70,13 @@ public class LuckySwing : MonoBehaviour
         return null;
     }
 
-void DrawLineToTargetAngle()
+    void DrawLineToTargetAngle()
     {
         // Vị trí của đối tượng
         Vector3 objectPosition = transform.position;
 
         // Góc đích đến được chuyển đổi thành vector hướng
-        Vector3 targetDirection = Quaternion.Euler(0,0, goal) * Vector3.up;
+        Vector3 targetDirection = Quaternion.Euler(0, 0, goal) * Vector3.up;
 
         // Điểm kết thúc của đường là vị trí của đối tượng cộng với vector hướng đích đến
         Vector3 lineEnd = objectPosition + targetDirection * 5000f; // Để dài hơn, bạn có thể điều chỉnh giá trị 5f
@@ -92,13 +96,13 @@ void DrawLineToTargetAngle()
             float x = Mathf.Cos(angle) * circleRadius;
             float y = Mathf.Sin(angle) * circleRadius;
 
-            Vector3 spawnPosition = new Vector3(x, y, 0f)+transform.localPosition;
-            spawn.items[i].transform.localPosition=spawnPosition;
+            Vector3 spawnPosition = new Vector3(x, y, 0f) + transform.localPosition;
+            spawn.items[i].transform.localPosition = spawnPosition;
 
         }
     }
 
-   public void SpinObject(float targetAngle)
+    public void SpinObject(float targetAngle)
     {
         // Tính toán tổng số độ cần xoay dựa trên targetRotation
         float z = transform.rotation.eulerAngles.z;
@@ -107,15 +111,17 @@ void DrawLineToTargetAngle()
         isSpinning = true;
         // Tạo tween để xoay đối tượng
         transform.DORotate(new Vector3(0, 0, totalRotation), rotationDuration, RotateMode.FastBeyond360)
-            .SetEase(Ease.OutQuint)
+            .SetEase(curve)
             .OnComplete(() =>
             {
                 Debug.Log("Xoay xong!");
             }).OnComplete(() =>
             {
-                transform.eulerAngles = new Vector3(0, 0, totalRotation%360);
+                transform.eulerAngles = new Vector3(0, 0, totalRotation % 360);
                 isSpinning = false;
-                onSpinEnd.Invoke();
+               var messenge= spawn.data.itemList.Find(x => x.id==currentChoice)?.description;
+ 
+                OnSpinEnd.Invoke(messenge);
             });
     }
     public void SpinObject(Transform target)
@@ -123,24 +129,28 @@ void DrawLineToTargetAngle()
         var goalDir = Quaternion.Euler(0, 0, goal) * Vector3.up;
         Vector3 to = target.position - transform.position;
         float gotoAngle = Vector3.Angle(goalDir, to);
-        if (target.position.x > transform.position.x) gotoAngle =-Mathf.Abs( gotoAngle); 
+        if (target.position.x > transform.position.x) gotoAngle = -Mathf.Abs(gotoAngle);
         SpinObject(gotoAngle);
-       Debug.Log(gotoAngle);
+        Debug.Log(gotoAngle);
     }
     public void Spin()
     {
         if (isSpinning) return;
-       Item item= GetRandomWeightedItem(spawn.data.itemList.ToArray());
-        
-        Debug.Log(item.id + " was choice");
+        Item item = GetRandomWeightedItem(spawn.data.itemList.ToArray());
+        currentChoice = item.id.ToString();
+
+        Debug.Log(currentChoice + " was choice");
         if (item != null)
         {
-           GameObject target= spawn.items.Find(x => x.name == item.id.ToString());
+            GameObject target = spawn.items.Find(x => x.name == item.id.ToString());
             lastChoice = target.transform;
             SpinObject(target.transform);
         }
     }
-
+    private void SpinEnd(string currentChoice)
+    {
+        ViewManager.GetView<PopUp>().ShowMessenge(currentChoice);
+    }
 
 
 }

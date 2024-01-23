@@ -4,7 +4,8 @@ using UnityEngine;
 [System.Serializable]
 public class Item 
 {
-    public int id;
+    public string id;
     public float weight;
     public Sprite sprite;
+    public string description;
 }
