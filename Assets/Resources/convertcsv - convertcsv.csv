@@ -1,0 +1,4 @@
+JockeyName,ID,AnimalNameID,AnimalImageFilePath
+John Doe,1,Dog,Images/DogImage.png
+Jane Doe,2,Cat,Images/CatImage.png
+Bob Smith,3,Horse,Images/HorseImage.png

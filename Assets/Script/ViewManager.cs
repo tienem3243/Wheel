@@ -6,7 +6,7 @@ using UnityEngine;
 public class ViewManager : MonoBehaviourSingleton<ViewManager>
 {
 
-    [SerializeField] private View _startingView;
+    [SerializeField] private List<View> _startingView;
     [SerializeField] private View[] _views;
     [SerializeField] private View _currentView;
     private void Start()
@@ -16,7 +16,9 @@ public class ViewManager : MonoBehaviourSingleton<ViewManager>
             item.Initialize();
             item.Hide();
         }
-        if (_startingView != null) Show(_startingView, true);
+        if (_startingView != null)
+        _startingView.ForEach(item => Show(item, true));
+      
     }
 
     private readonly Stack<View> _history = new Stack<View>();
