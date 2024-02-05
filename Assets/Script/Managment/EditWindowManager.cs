@@ -2,7 +2,7 @@ using MyBox;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class EditWindowManager : MonoBehaviour 
+public class EditWindowManager : MonoBehaviourSingleton<EditWindowManager>  
 {
   
 
@@ -11,6 +11,7 @@ public class EditWindowManager : MonoBehaviour
    
     public void ApplyUpdate()
     {
+        Manager.Instance.dataManager.DeleteChoice();  
         foreach (var item in _views)
         {
             item.UpdateView();
@@ -18,6 +19,7 @@ public class EditWindowManager : MonoBehaviour
     }
     public void Refresh()
     {
+        Clear();
         Init();
     }
     public void Init()
@@ -39,5 +41,12 @@ public class EditWindowManager : MonoBehaviour
             }
         }
         return default(T);
+    }
+    public void Clear()
+    {
+        foreach (var item in _views)
+        {
+            item.Clear();
+        }
     }
 }

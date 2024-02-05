@@ -16,4 +16,5 @@ public class Animal
         this.nameAnimal= nameAnimal;    
         this.imagePath = imagePath;
     }
+    public Animal() { }
 }

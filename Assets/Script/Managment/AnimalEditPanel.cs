@@ -7,9 +7,8 @@ public class AnimalEditPanel : View
 {
     [SerializeField] GameObject animalEditTagPrefab;
     [SerializeField] Transform rootAnimal;
-    public List<AnimalEditTag> animalEditTags;  
-    
-
+    public List<AnimalEditTag> animalEditTags;
+    private AnimalEditTag currentSelected;
     public void CreateAnimalUI(Animal animal, Transform parentTransform)
     {
         GameObject animalUIPrefab = Instantiate(animalEditTagPrefab, parentTransform);
@@ -32,11 +31,36 @@ public class AnimalEditPanel : View
             CreateAnimalUI(animal, rootAnimal);
         }
     }
+    public void SetSelect(AnimalEditTag tag)
+    {
+        currentSelected = tag;
+    }
+    public AnimalEditTag GetCurrentSelected()
+    {
+        return currentSelected;
+    }
 
     [ButtonMethod]
     public override void UpdateView()
     {
         animalEditTags.ForEach(x => x.ApplyUpdate());
     }
- 
+
+    public override void Clear()
+    {
+        animalEditTags.ForEach(x=>Destroy(x.gameObject));
+        animalEditTags.Clear();
+    }
+    public void Delete()
+    {
+        if (currentSelected != null)
+        {
+            var temp = currentSelected;
+            animalEditTags.Remove(currentSelected);
+            Manager.Instance.dataManager.AddAnimalToDelete(temp.GetData());
+            Destroy(temp.gameObject);
+
+        }
+    }
 }
+

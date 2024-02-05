@@ -45,7 +45,9 @@ public class AnimalEditTag : TagView<Animal>
          
           
         });
-      
+        Button selfBtn = GetComponent<Button>();
+        btn.onClick?.AddListener(() => Select());
+
     }
     public override void ApplyUpdate()
     {
@@ -58,5 +60,9 @@ public class AnimalEditTag : TagView<Animal>
         Debug.Log(filePath.text+"Casts");   
         SetHolder(animal);
        Manager.Instance.dataManager.UpdateAnimalInfo(animal);
+    }
+    public override void Select()
+    {
+        EditWindowManager.Instance.GetView<AnimalEditPanel>().SetSelect(this);
     }
 }
